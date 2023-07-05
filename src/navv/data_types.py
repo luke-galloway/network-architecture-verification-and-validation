@@ -4,13 +4,21 @@
 
 import netaddr
 
-
-class InventoryItem:
+class AssetItem:
     def __init__(self, ip=None, name=None, color=None):
         self.ip = ip
         self.name = name
         self.color = color
 
+class InventoryItem:
+    def __init__(self, ip=None, mac=None, mac_owner=None, port=None, protocol=None, name=None, color=None):
+        self.ip = ip
+        self.mac = mac
+        self.mac_owner = mac_owner
+        self.port = port
+        self.protocol = protocol
+        self.name = name
+        self.color = color
 
 class Segment:
     def __init__(self, name=None, description=None, network=None, color=None):

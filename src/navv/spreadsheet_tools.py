@@ -67,18 +67,40 @@ def get_workbook(file_name):
         wb = openpyxl.load_workbook(file_name)
     else:
         wb = openpyxl.Workbook()
-        inv_sheet = wb.active
-        inv_sheet.title = "Inventory"
+        new_inv_sheet = wb.active
+        # inv_sheet.title = "Inventory" #This is the previous name, a new tab is being created for this.
+        new_inv_sheet.title = "Inventory"
+
+        asset_lst_sheet = wb.create_sheet("Asset List")
+        asset_lst_sheet.title = "Asset List"
+        asset_lst_sheet.cell(row=1, column=1, value="IP").style = HEADER_STYLE
+        asset_lst_sheet.cell(row=1, column=2, value="Name").style = HEADER_STYLE
+
+        new_inv_sheet.cell(row=1, column=1, value="IP").style = HEADER_STYLE
+        new_inv_sheet.cell(row=1, column=2, value="MAC").style = HEADER_STYLE
+        new_inv_sheet.cell(row=1, column=3, value="MAC_Owner").style = HEADER_STYLE
+        new_inv_sheet.cell(row=1, column=4, value="Port").style = HEADER_STYLE
+        new_inv_sheet.cell(row=1, column=5, value="Protocol").style = HEADER_STYLE
+        new_inv_sheet.cell(row=1, column=6, value="Name").style = HEADER_STYLE
+
         seg_sheet = wb.create_sheet("Segments")
-
-        inv_sheet.cell(row=1, column=1, value="IP").style = HEADER_STYLE
-        inv_sheet.cell(row=1, column=2, value="Name").style = HEADER_STYLE
-
         seg_sheet.cell(row=1, column=1, value="Name").style = HEADER_STYLE
         seg_sheet.cell(row=1, column=2, value="Description").style = HEADER_STYLE
         seg_sheet.cell(row=1, column=3, value="CIDR").style = HEADER_STYLE
     return wb
 
+@utilities.timeit
+def get_asset_data(ws, **kwargs):
+    asset = dict()
+    for row in itertools.islice(ws.iter_rows(), 1, None):
+        if not row[0].value or not row[1].value:
+            continue
+        asset[row[0].value] = data_types.AssetItem(
+            ip=row[0].value,
+            name=row[1].value,
+            color=(copy(row[0].fill), copy(row[0].font)),
+        )
+    return asset
 
 @utilities.timeit
 def get_inventory_data(ws, **kwargs):
@@ -88,7 +110,11 @@ def get_inventory_data(ws, **kwargs):
             continue
         inventory[row[0].value] = data_types.InventoryItem(
             ip=row[0].value,
-            name=row[1].value,
+            mac=row[1].value,
+            mac_owner=row[2].value,
+            port=row[3].value,
+            protocol=row[4].value,
+            name=row[5].value,
             color=(copy(row[0].fill), copy(row[0].font)),
         )
     return inventory
@@ -161,6 +187,7 @@ def perform_analysis(
     rows,
     services,
     conn_states,
+    assets,
     inventory,
     segments,
     dns_data,
@@ -186,8 +213,8 @@ def perform_analysis(
     )
     print("Performing analysis(including lookups). This may take a while:")
     for row_index, row in enumerate(tqdm(rows), start=2):
-        row.src_desc = handle_ip(row.src_ip, dns_data, inventory, segments, ext_IPs, unk_int_IPs)
-        row.dest_desc = handle_ip(row.dest_ip, dns_data, inventory, segments, ext_IPs, unk_int_IPs)
+        row.src_desc = handle_ip(row.src_ip, dns_data, assets, inventory, segments, ext_IPs, unk_int_IPs)
+        row.dest_desc = handle_ip(row.dest_ip, dns_data, assets, inventory, segments, ext_IPs, unk_int_IPs)
         handle_service(row, services)
         row.conn = (row.conn, conn_states[row.conn])
         write_row_to_sheet(row, row_index, sheet)
@@ -253,7 +280,7 @@ def handle_service(row, services):
             row.service = ("unknown service", UNKNOWN_EXTERNAL_CELL_COLOR)
 
 
-def handle_ip(ip_to_check, dns_data, inventory, segments, ext_IPs, unk_int_IPs):
+def handle_ip(ip_to_check, dns_data, assets, inventory, segments, ext_IPs, unk_int_IPs):
     """Function take IP Address and uses collected dns_data, inventory, and segment information to give IP Addresses in analysis context.
 
     Priority flow:

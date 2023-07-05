@@ -67,6 +67,7 @@ def main(args):
     services, conn_states = spreadsheet_tools.get_package_data()
     timer_data = dict()
     segments = spreadsheet_tools.get_segments_data(wb["Segments"])
+    assets = spreadsheet_tools.get_asset_data(wb["Asset List"])
     inventory = spreadsheet_tools.get_inventory_data(wb["Inventory"])
     zeek_logs_path = args.zeek_logs
 
@@ -112,6 +113,7 @@ def main(args):
         rows,
         services,
         conn_states,
+        assets,
         inventory,
         segments,
         dns_filtered,
