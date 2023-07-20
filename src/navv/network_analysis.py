@@ -10,6 +10,8 @@ import pickle
 import sys
 
 # package imports
+from navv import data_types
+from navv import pandas_tools
 from navv import utilities
 from navv import spreadsheet_tools
 from navv import _version
@@ -70,6 +72,8 @@ def main(args):
     assets = spreadsheet_tools.get_asset_data(wb["Asset List"])
     inventory = spreadsheet_tools.get_inventory_data(wb["Inventory"])
     zeek_logs_path = args.zeek_logs
+    
+    pandaFrame = pandas_tools.Pandas_Tools(data_types.InventoryItem.getColumnNames())
 
     if args.pcap:
         utilities.run_zeek(os.path.abspath(args.pcap), zeek_logs_path, timer=timer_data)

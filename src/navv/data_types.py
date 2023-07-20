@@ -24,6 +24,29 @@ class InventoryItem:
         self.protocol = protocol
         self.name = name
         self.color = color
+    
+    @staticmethod
+    def getColumnNames():
+        return  [
+            "IP",
+            "Override",
+            "(Host) Name)",
+            "MAC Address",
+            "MAC Vendor",
+            "Ports Used",
+            "Services Observed",
+            "Src Count Destination Count",
+            "Network Segment",
+            "Cross boundary Connections",
+            "CBC #",
+            "Internet Connections",
+            "Remote Connections", 
+            "SNMP v.",
+            "Successful Connection Count",
+            "%"
+        ]
+
+
 
 class Segment:
     def __init__(self, name=None, description=None, network=None, color=None):
