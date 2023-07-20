@@ -11,11 +11,16 @@ class AssetItem:
         self.color = color
 
 class InventoryItem:
-    def __init__(self, ip=None, mac=None, mac_owner=None, port=None, protocol=None, name=None, color=None):
-        self.ip = ip
-        self.mac = mac
-        self.mac_owner = mac_owner
-        self.port = port
+    def __init__(self, orig_ip=None, orig_port=None, orig_mac=None, orig_mac_owner=None, resp_ip=None, resp_port=None, resp_mac=None, resp_mac_owner=None, conn_state=None, protocol=None, name=None, color=None):
+        self.orig_ip = orig_ip
+        self.orig_port = orig_port
+        self.orig_mac = orig_mac
+        self.orig_mac_owner = orig_mac_owner
+        self.resp_ip = resp_ip
+        self.resp_port = resp_port
+        self.resp_mac = resp_mac
+        self.resp_mac_owner = resp_mac_owner
+        self.conn_state = conn_state
         self.protocol = protocol
         self.name = name
         self.color = color

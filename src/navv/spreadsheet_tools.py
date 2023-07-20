@@ -68,7 +68,6 @@ def get_workbook(file_name):
     else:
         wb = openpyxl.Workbook()
         new_inv_sheet = wb.active
-        # inv_sheet.title = "Inventory" #This is the previous name, a new tab is being created for this.
         new_inv_sheet.title = "Inventory"
 
         asset_lst_sheet = wb.create_sheet("Asset List")
@@ -76,12 +75,17 @@ def get_workbook(file_name):
         asset_lst_sheet.cell(row=1, column=1, value="IP").style = HEADER_STYLE
         asset_lst_sheet.cell(row=1, column=2, value="Name").style = HEADER_STYLE
 
-        new_inv_sheet.cell(row=1, column=1, value="IP").style = HEADER_STYLE
-        new_inv_sheet.cell(row=1, column=2, value="MAC").style = HEADER_STYLE
-        new_inv_sheet.cell(row=1, column=3, value="MAC_Owner").style = HEADER_STYLE
-        new_inv_sheet.cell(row=1, column=4, value="Port").style = HEADER_STYLE
-        new_inv_sheet.cell(row=1, column=5, value="Protocol").style = HEADER_STYLE
-        new_inv_sheet.cell(row=1, column=6, value="Name").style = HEADER_STYLE
+        new_inv_sheet.cell(row=1, column=1, value="Originating IP").style = HEADER_STYLE
+        new_inv_sheet.cell(row=1, column=2, value="Originating Port").style = HEADER_STYLE
+        new_inv_sheet.cell(row=1, column=3, value="Originating MAC").style = HEADER_STYLE
+        new_inv_sheet.cell(row=1, column=4, value="Originating MAC Owner").style = HEADER_STYLE
+        new_inv_sheet.cell(row=1, column=5, value="Responding IP").style = HEADER_STYLE
+        new_inv_sheet.cell(row=1, column=6, value="Responding Port").style = HEADER_STYLE
+        new_inv_sheet.cell(row=1, column=7, value="Responding MAC").style = HEADER_STYLE
+        new_inv_sheet.cell(row=1, column=8, value="Responding MAC Owner").style = HEADER_STYLE
+        new_inv_sheet.cell(row=1, column=9, value="Connection State").style = HEADER_STYLE
+        new_inv_sheet.cell(row=1, column=10, value="Protocol").style = HEADER_STYLE
+        new_inv_sheet.cell(row=1, column=11, value="Name").style = HEADER_STYLE
 
         seg_sheet = wb.create_sheet("Segments")
         seg_sheet.cell(row=1, column=1, value="Name").style = HEADER_STYLE
@@ -109,12 +113,17 @@ def get_inventory_data(ws, **kwargs):
         if not row[0].value or not row[1].value:
             continue
         inventory[row[0].value] = data_types.InventoryItem(
-            ip=row[0].value,
-            mac=row[1].value,
-            mac_owner=row[2].value,
-            port=row[3].value,
-            protocol=row[4].value,
-            name=row[5].value,
+            orig_ip=row[0].value,
+            orig_port=row[1].value,
+            orig_mac=row[2].value,
+            orig_mac_owner=row[3].value,
+            resp_ip=row[4].value,
+            resp_port=row[5].value,
+            resp_mac=row[6].value,
+            resp_mac_owner=row[7].value,
+            conn_state=row[8].value,
+            protocol=row[9].value,
+            name=row[10].value,
             color=(copy(row[0].fill), copy(row[0].font)),
         )
     return inventory
