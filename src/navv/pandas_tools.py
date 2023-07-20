@@ -21,9 +21,19 @@ DATA_PATH = pkg_resources.resource_filename("navv", "data/")
 class Pandas_Tools:
     def __init__(self, columnNames):
         self.columns = columnNames
+        self.df = pd.DataFrame(self.columns)
 
     def getEmptyDataFrameList(self):
-        return pd.DataFrame(self.columns)
+        return self.df
+    
+    def appendSheetToExistingExcel(self, filePath, sheetName):
+        with pd.ExcelWriter(
+        filePath,
+        mode="a",
+        engine="openpyxl",
+        if_sheet_exists="replace",
+        ) as writer:
+            self.df.to_excel(writer, sheet_name=sheetName)  
     
 
     

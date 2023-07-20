@@ -74,7 +74,7 @@ def main(args):
     zeek_logs_path = args.zeek_logs
     
     pandaFrame = pandas_tools.Pandas_Tools(data_types.InventoryItem.getColumnNames())
-
+    pandaFrame.appendSheetToExistingExcel(file_name, "Inventory")
     if args.pcap:
         utilities.run_zeek(os.path.abspath(args.pcap), zeek_logs_path, timer=timer_data)
     else:
