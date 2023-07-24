@@ -66,15 +66,30 @@ def main(args):
 
     wb = spreadsheet_tools.get_workbook(file_name)
 
-    services, conn_states = spreadsheet_tools.get_package_data()
-    timer_data = dict()
-    segments = spreadsheet_tools.get_segments_data(wb["Segments"])
-    assets = spreadsheet_tools.get_asset_data(wb["Asset List"])
-    inventory = spreadsheet_tools.get_inventory_data(wb["Inventory"])
-    zeek_logs_path = args.zeek_logs
+    try:
+        services, conn_states = spreadsheet_tools.get_package_data()
+        timer_data = dict()
+        segments = spreadsheet_tools.get_segments_data(wb["Segments"])
+        assets = spreadsheet_tools.get_asset_data(wb["Asset List"])
+        if("Inventory" in wb.sheetnames):
+            inventory = spreadsheet_tools.get_inventory_data(wb["Inventory"])
+        else:
+            inventory = dict()
+        if(inventory == dict() and ("Inventory" not in wb.sheetnames)):
+            pandaFrame = pandas_tools.Pandas_Tools(list(), data_types.InventoryItem.getColumnNames())
+            pandaFrame.appendSheetToExistingExcel(file_name, "Inventory")
+
+        if(inventory == dict() and ("Inventory" in wb.sheetnames)):
+            if(wb["Inventory"].max_row < 3 or wb["Inventory"].max_column < 3):
+                pandaFrame = pandas_tools.Pandas_Tools(list(), data_types.InventoryItem.getColumnNames())
+                pandaFrame.appendSheetToExistingExcel(file_name, "Inventory")
+
+    except Exception as e:
+        print("EXCEPTION: See get_* functions calls in network_analysis.py")
+        print(e)
     
-    pandaFrame = pandas_tools.Pandas_Tools(data_types.InventoryItem.getColumnNames())
-    pandaFrame.appendSheetToExistingExcel(file_name, "Inventory")
+    zeek_logs_path = args.zeek_logs
+
     if args.pcap:
         utilities.run_zeek(os.path.abspath(args.pcap), zeek_logs_path, timer=timer_data)
     else:

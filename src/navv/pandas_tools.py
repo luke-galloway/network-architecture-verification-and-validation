@@ -19,9 +19,10 @@ DATA_PATH = pkg_resources.resource_filename("navv", "data/")
 
 
 class Pandas_Tools:
-    def __init__(self, columnNames):
-        self.columns = columnNames
-        self.df = pd.DataFrame(self.columns)
+    def __init__(self, d=list(), cols=list()):
+        self.data = d
+        self.columns = cols
+        self.df = pd.DataFrame(data=d, column=cols)
 
     def getEmptyDataFrameList(self):
         return self.df

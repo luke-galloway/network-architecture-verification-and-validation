@@ -67,26 +67,10 @@ def get_workbook(file_name):
         wb = openpyxl.load_workbook(file_name)
     else:
         wb = openpyxl.Workbook()
-        new_inv_sheet = wb.active
-        new_inv_sheet.title = "Inventory"
-
         asset_lst_sheet = wb.create_sheet("Asset List")
         asset_lst_sheet.title = "Asset List"
         asset_lst_sheet.cell(row=1, column=1, value="IP").style = HEADER_STYLE
         asset_lst_sheet.cell(row=1, column=2, value="Name").style = HEADER_STYLE
-
-        new_inv_sheet.cell(row=1, column=1, value="Originating IP").style = HEADER_STYLE
-        new_inv_sheet.cell(row=1, column=2, value="Originating Port").style = HEADER_STYLE
-        new_inv_sheet.cell(row=1, column=3, value="Originating MAC").style = HEADER_STYLE
-        new_inv_sheet.cell(row=1, column=4, value="Originating MAC Owner").style = HEADER_STYLE
-        new_inv_sheet.cell(row=1, column=5, value="Responding IP").style = HEADER_STYLE
-        new_inv_sheet.cell(row=1, column=6, value="Responding Port").style = HEADER_STYLE
-        new_inv_sheet.cell(row=1, column=7, value="Responding MAC").style = HEADER_STYLE
-        new_inv_sheet.cell(row=1, column=8, value="Responding MAC Owner").style = HEADER_STYLE
-        new_inv_sheet.cell(row=1, column=9, value="Connection State").style = HEADER_STYLE
-        new_inv_sheet.cell(row=1, column=10, value="Protocol").style = HEADER_STYLE
-        new_inv_sheet.cell(row=1, column=11, value="Name").style = HEADER_STYLE
-
         seg_sheet = wb.create_sheet("Segments")
         seg_sheet.cell(row=1, column=1, value="Name").style = HEADER_STYLE
         seg_sheet.cell(row=1, column=2, value="Description").style = HEADER_STYLE
@@ -113,21 +97,26 @@ def get_inventory_data(ws, **kwargs):
         if not row[0].value or not row[1].value:
             continue
         inventory[row[0].value] = data_types.InventoryItem(
-            orig_ip=row[0].value,
-            orig_port=row[1].value,
-            orig_mac=row[2].value,
-            orig_mac_owner=row[3].value,
-            resp_ip=row[4].value,
-            resp_port=row[5].value,
-            resp_mac=row[6].value,
-            resp_mac_owner=row[7].value,
-            conn_state=row[8].value,
-            protocol=row[9].value,
-            name=row[10].value,
+            ip = row[0].value,
+            override = row[1].value,
+            name = row[2].value,
+            mac_address = row[3].value,
+            mac_vendor = row[4].value,
+            ports_used = row[5].value,
+            services_observed = row[6].value,
+            source_count = row[7].value,
+            destination_count = row[8].value,
+            network_segment = row[9].value,
+            cross_boundary_connections = row[10].value,
+            cbc = row[11].value,
+            internet_connections = row[12].value,
+            remote_connections = row[13].value,
+            snmp_version = row[14].value,
+            successful_connection_count = row[15].value,
+            percentage = row[16].value,
             color=(copy(row[0].fill), copy(row[0].font)),
         )
     return inventory
-
 
 @utilities.timeit
 def get_segments_data(ws):

@@ -11,19 +11,26 @@ class AssetItem:
         self.color = color
 
 class InventoryItem:
-    def __init__(self, orig_ip=None, orig_port=None, orig_mac=None, orig_mac_owner=None, resp_ip=None, resp_port=None, resp_mac=None, resp_mac_owner=None, conn_state=None, protocol=None, name=None, color=None):
-        self.orig_ip = orig_ip
-        self.orig_port = orig_port
-        self.orig_mac = orig_mac
-        self.orig_mac_owner = orig_mac_owner
-        self.resp_ip = resp_ip
-        self.resp_port = resp_port
-        self.resp_mac = resp_mac
-        self.resp_mac_owner = resp_mac_owner
-        self.conn_state = conn_state
-        self.protocol = protocol
+    def __init__(self, ip=None, override=None, name=None, mac_address=None, mac_vendor=None, ports_used=None, services_observed=None, 
+                 source_count=None, destination_count=None, network_segment=None, cross_boundary_connections=None, cbc=None, 
+                 internet_connections=None, remote_connections=None, snmp_version=None, successful_connection_count=None, percentage=None):
+        self.ip = ip
+        self.override = override
         self.name = name
-        self.color = color
+        self.mac_address = mac_address
+        self.mac_vendor = mac_vendor
+        self.ports_used = ports_used
+        self.services_observed = services_observed
+        self.source_count = source_count
+        self.destination_count = destination_count
+        self.network_segment = network_segment
+        self.cross_boundary_connections = cross_boundary_connections
+        self.cbc = cbc
+        self.internet_connections = internet_connections
+        self.remote_connections = remote_connections
+        self.snmp_version = snmp_version
+        self.successful_connection_count = successful_connection_count
+        self.percentage = percentage
     
     @staticmethod
     def getColumnNames():
@@ -35,7 +42,8 @@ class InventoryItem:
             "MAC Vendor",
             "Ports Used",
             "Services Observed",
-            "Src Count Destination Count",
+            "Src Count",
+            "Destination Count",
             "Network Segment",
             "Cross boundary Connections",
             "CBC #",
